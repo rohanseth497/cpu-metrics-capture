@@ -6,7 +6,7 @@ import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
 /*
- * Boostrap program to start the run the producer
+ * Bootstrap program to start the run the producer
  * */
 public class Bootstrap {
 	
