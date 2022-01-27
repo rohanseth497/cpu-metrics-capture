@@ -18,7 +18,7 @@ public class Producer implements Runnable {
 
 	private static Logger LOGGER = Logger.getLogger(Producer.class.getName());
 	private static final String BOOTSTRAP_SERVER_CONFIG_PARAM = "KAFKA_CLUSTER";
-	private static final String TOPIC_NAME = "cpu-metrics";
+	
 
 	private KafkaProducer<String, String> kafkaProducer = null;
 
@@ -59,7 +59,7 @@ public class Producer implements Runnable {
 					String key = "machine-" + i;
 					String value = String.valueOf(rnd.nextInt(20));
 
-					producerRecord = new ProducerRecord<>(TOPIC_NAME, key, value);
+					producerRecord = new ProducerRecord<>(Bootstrap.TOPIC_NAME, key, value);
 
 					kafkaProducer.send(producerRecord, new Callback() {
 						@Override
