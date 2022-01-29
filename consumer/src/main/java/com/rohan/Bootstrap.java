@@ -1,4 +1,4 @@
-package com.rohan.consumer;
+package com.rohan;
 
 import java.io.IOException;
 import java.util.logging.Level;
@@ -7,8 +7,8 @@ import java.util.logging.Logger;
 import org.apache.kafka.streams.KafkaStreams;
 import org.glassfish.grizzly.http.server.HttpServer;
 
-import com.rohan.restapi.ApiResource;
-import com.rohan.restapi.ServerStartup;
+import com.rohan.restapi.ServerStartupUtil;
+import com.rohan.stream.StreamPipeline;
 
 public class Bootstrap {
 
@@ -17,10 +17,10 @@ public class Bootstrap {
 	private static void startServerAndStream() throws IOException {
 		
 		// Start running the Kafka Stream
-		KafkaStreams stream = null;
+		KafkaStreams stream = StreamPipeline.start();
 		
-		// Starting the jersey server
-		HttpServer server = ServerStartup.startServer();
+		// Starting the REST jersey server
+		HttpServer server = ServerStartupUtil.startServer();
 		
 		// Close all open streams with shutdown hook for JVM
 		Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {

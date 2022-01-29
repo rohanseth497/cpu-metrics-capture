@@ -13,9 +13,9 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.moxy.json.MoxyJsonFeature;
 import org.glassfish.jersey.server.ResourceConfig;
 
-public class ServerStartup {
+public class ServerStartupUtil {
 
-	private static final Logger LOGGER = Logger.getLogger(ServerStartup.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ServerStartupUtil.class.getName());
 
 	public static HttpServer startServer() throws IOException {
 
