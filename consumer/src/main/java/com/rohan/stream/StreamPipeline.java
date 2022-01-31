@@ -61,7 +61,7 @@ public class StreamPipeline {
 				.withDoubleValues().inMemory().build();
 
 		StateStoreSupplier machineToNumberOfRecordsReadStore = Stores.create(Constants.NUM_RECORDS_STORE_NAME)
-				.withStringKeys().withDoubleValues().inMemory().build();
+				.withStringKeys().withIntegerValues().inMemory().build();
 
 		TopologyBuilder builder = new TopologyBuilder();
 

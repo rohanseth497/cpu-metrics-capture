@@ -3,3 +3,7 @@
 .project
 
 target/
+
+in_memory_avg_store
+
+in_memory_num_record_store
