@@ -10,12 +10,13 @@ public class CumulativeAvgProcessor implements Processor<String, String> {
 
 	private static final Logger LOGGER = Logger.getLogger(CumulativeAvgProcessor.class.getName());
 	private static final String AVG_STORE_NAME = "in_memory_avg_store";
-	 private static final String NUM_RECORDS_STORE_NAME = "in_memory_num_record_store";
+	private static final String NUM_RECORDS_STORE_NAME = "in_memory_num_record_store";
 	
 	ProcessorContext pc = null;
 	private KeyValueStore<String, Double> machineToAvgCPUUsageStore;
 	private KeyValueStore<String, Integer> machineToNumberOfRecordsReadStore;
 
+	
 	@Override
 	public void init(ProcessorContext context) {
 		this.pc = context;
@@ -30,6 +31,18 @@ public class CumulativeAvgProcessor implements Processor<String, String> {
 	@Override
 	public void process(String machineId, String currentCPUUsage) {
 		LOGGER.info("Current machineId: " + machineId + " and usage is: " + currentCPUUsage);
+		
+		Double currentCPUUsageOfMachine = Double.parseDouble(currentCPUUsage);
+		Integer recordsReadForMachine = machineToNumberOfRecordsReadStore.get(machineId);
+		Double latestCumulativeAvg = null;
+		
+		if (recordsReadForMachine == null) {
+			machineToNumberOfRecordsReadStore.put(machineId, 1);
+		} else {
+			machineToNumberOfRecordsReadStore.put(machineId, recordsReadForMachine + 1);
+		}
+		
+		machineToAvgCPUUsageStore.put(machineId, latestCumulativeAvg);
 	}
 
 	@Override

@@ -22,6 +22,7 @@ public class StreamPipeline {
 	private static final String SOURCE_NAME = "cpu-metrics-topic-source";
 	private static final String AVG_STORE_NAME = "in_memory_avg_store";
 	private static final String PROCESSOR_NAME = "in_memory_avg_processor";
+	private static final String NUM_RECORDS_STORE_NAME = "in_memory_num_record_store";
 	private static final String APPLICATION_ID = "my-streams-application";
 	private static final String TOPIC_NAME = "cpu-metrics";
 
@@ -63,6 +64,9 @@ public class StreamPipeline {
 
 		StateStoreSupplier machineToAvgCPUUsageStore = Stores.create(AVG_STORE_NAME).withStringKeys().withDoubleValues()
 				.inMemory().build();
+		
+		StateStoreSupplier machineToNumberOfRecordsReadStore = Stores.create(NUM_RECORDS_STORE_NAME).withStringKeys().withDoubleValues()
+				.inMemory().build();
 
 		TopologyBuilder builder = new TopologyBuilder();
 
@@ -72,7 +76,9 @@ public class StreamPipeline {
 					public Processor<String, String> get() {
 						return new CumulativeAvgProcessor();
 					}
-				}, SOURCE_NAME).addStateStore(machineToAvgCPUUsageStore, PROCESSOR_NAME);
+				}, SOURCE_NAME)
+				.addStateStore(machineToAvgCPUUsageStore, PROCESSOR_NAME)
+				.addStateStore(machineToNumberOfRecordsReadStore, PROCESSOR_NAME);
 
 		return builder;
 	}
