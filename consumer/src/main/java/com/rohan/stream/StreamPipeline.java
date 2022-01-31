@@ -67,9 +67,9 @@ public class StreamPipeline {
 		TopologyBuilder builder = new TopologyBuilder();
 
 		builder.addSource(SOURCE_NAME, TOPIC_NAME)
-				.addProcessor(PROCESSOR_NAME, new ProcessorSupplier<String, Double>() {
+				.addProcessor(PROCESSOR_NAME, new ProcessorSupplier<String, String>() {
 					@Override
-					public Processor<String, Double> get() {
+					public Processor<String, String> get() {
 						return new CumulativeAvgProcessor();
 					}
 				}, SOURCE_NAME).addStateStore(machineToAvgCPUUsageStore, PROCESSOR_NAME);
