@@ -13,33 +13,28 @@ import org.apache.kafka.streams.processor.StateStoreSupplier;
 import org.apache.kafka.streams.processor.TopologyBuilder;
 import org.apache.kafka.streams.state.Stores;
 
+import com.rohan.Constants;
+
 public class StreamPipeline {
 
 	private static final Logger LOGGER = Logger.getLogger(StreamPipeline.class.getName());
 
 	static Properties props;
-	private static final String BOOTSTRAP_SERVER_CONFIG_PARAM = "KAFKA_CLUSTER";
-	private static final String SOURCE_NAME = "cpu-metrics-topic-source";
-	private static final String AVG_STORE_NAME = "in_memory_avg_store";
-	private static final String PROCESSOR_NAME = "in_memory_avg_processor";
-	private static final String NUM_RECORDS_STORE_NAME = "in_memory_num_record_store";
-	private static final String APPLICATION_ID = "my-streams-application";
-	private static final String TOPIC_NAME = "cpu-metrics";
 
 	static {
 		props = new Properties();
 
-		props.put(StreamsConfig.APPLICATION_ID_CONFIG, APPLICATION_ID);
+		props.put(StreamsConfig.APPLICATION_ID_CONFIG, Constants.APPLICATION_ID);
 
 		String defaultKafkaCluster = "localhost:9092";
-		String kafkaCluster = System.getProperty(BOOTSTRAP_SERVER_CONFIG_PARAM, defaultKafkaCluster);
+		String kafkaCluster = System.getProperty(Constants.BOOTSTRAP_SERVER_CONFIG_PARAM, defaultKafkaCluster);
 		props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, kafkaCluster);
 
 		props.put(StreamsConfig.KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
 		props.put(StreamsConfig.VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 
-		props.put(StreamsConfig.STATE_DIR_CONFIG, AVG_STORE_NAME);
+		props.put(StreamsConfig.STATE_DIR_CONFIG, Constants.AVG_STORE_NAME);
 	}
 
 	public static KafkaStreams start() {
@@ -62,23 +57,22 @@ public class StreamPipeline {
 
 	static TopologyBuilder getStoreSuppliedTopology() {
 
-		StateStoreSupplier machineToAvgCPUUsageStore = Stores.create(AVG_STORE_NAME).withStringKeys().withDoubleValues()
-				.inMemory().build();
-		
-		StateStoreSupplier machineToNumberOfRecordsReadStore = Stores.create(NUM_RECORDS_STORE_NAME).withStringKeys().withDoubleValues()
-				.inMemory().build();
+		StateStoreSupplier machineToAvgCPUUsageStore = Stores.create(Constants.AVG_STORE_NAME).withStringKeys()
+				.withDoubleValues().inMemory().build();
+
+		StateStoreSupplier machineToNumberOfRecordsReadStore = Stores.create(Constants.NUM_RECORDS_STORE_NAME)
+				.withStringKeys().withDoubleValues().inMemory().build();
 
 		TopologyBuilder builder = new TopologyBuilder();
 
-		builder.addSource(SOURCE_NAME, TOPIC_NAME)
-				.addProcessor(PROCESSOR_NAME, new ProcessorSupplier<String, String>() {
+		builder.addSource(Constants.SOURCE_NAME, Constants.TOPIC_NAME)
+				.addProcessor(Constants.PROCESSOR_NAME, new ProcessorSupplier<String, String>() {
 					@Override
 					public Processor<String, String> get() {
 						return new CumulativeAvgProcessor();
 					}
-				}, SOURCE_NAME)
-				.addStateStore(machineToAvgCPUUsageStore, PROCESSOR_NAME)
-				.addStateStore(machineToNumberOfRecordsReadStore, PROCESSOR_NAME);
+				}, Constants.SOURCE_NAME).addStateStore(machineToAvgCPUUsageStore, Constants.PROCESSOR_NAME)
+				.addStateStore(machineToNumberOfRecordsReadStore, Constants.PROCESSOR_NAME);
 
 		return builder;
 	}

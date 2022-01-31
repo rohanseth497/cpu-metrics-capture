@@ -6,11 +6,11 @@ import org.apache.kafka.streams.processor.Processor;
 import org.apache.kafka.streams.processor.ProcessorContext;
 import org.apache.kafka.streams.state.KeyValueStore;
 
+import com.rohan.Constants;
+
 public class CumulativeAvgProcessor implements Processor<String, String> {
 
 	private static final Logger LOGGER = Logger.getLogger(CumulativeAvgProcessor.class.getName());
-	private static final String AVG_STORE_NAME = "in_memory_avg_store";
-	private static final String NUM_RECORDS_STORE_NAME = "in_memory_num_record_store";
 
 	ProcessorContext pc = null;
 	private KeyValueStore<String, Double> machineToAvgCPUUsageStore;
@@ -21,9 +21,9 @@ public class CumulativeAvgProcessor implements Processor<String, String> {
 		this.pc = context;
 		this.pc.schedule(12000); // punctuate after this interval
 
-		this.machineToAvgCPUUsageStore = (KeyValueStore<String, Double>) pc.getStateStore(AVG_STORE_NAME);
+		this.machineToAvgCPUUsageStore = (KeyValueStore<String, Double>) pc.getStateStore(Constants.AVG_STORE_NAME);
 		this.machineToNumberOfRecordsReadStore = (KeyValueStore<String, Integer>) pc
-				.getStateStore(NUM_RECORDS_STORE_NAME);
+				.getStateStore(Constants.NUM_RECORDS_STORE_NAME);
 
 		LOGGER.info("Initializing the processor");
 	}
